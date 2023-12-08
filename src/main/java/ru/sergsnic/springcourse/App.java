@@ -15,12 +15,21 @@ public class App {
         Session session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
-
-            Person person = session.get(Person.class, 1);
-            System.out.println(person.getName());
-            System.out.println(person.getAge());
+            //изменение
+            Person person1 = session.get(Person.class, 3);
+            person1.setName("New name");
+            //удаление
+            Person person2 = session.get(Person.class, 2);
+            session.delete(person2);
+            //получение id новой записи в таблице.
+            Person person3 = new Person("Bob", 30);
+            session.save(person3);
 
             session.getTransaction().commit();
+
+            //получение id новой записи в таблице.
+            System.out.println("Id новой записи " + person3.getId());
+
         } finally {
             sessionFactory.close();
         }
