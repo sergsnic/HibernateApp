@@ -5,6 +5,8 @@ import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import ru.sergsnic.springcourse.model.Person;
 
+import java.util.List;
+
 /**
  * Hello world!
  */
@@ -15,20 +17,24 @@ public class App {
         Session session = sessionFactory.getCurrentSession();
         try {
             session.beginTransaction();
-            //изменение
-            Person person1 = session.get(Person.class, 3);
-            person1.setName("New name");
-            //удаление
-            Person person2 = session.get(Person.class, 2);
-            session.delete(person2);
-            //получение id новой записи в таблице.
-            Person person3 = new Person("Bob", 30);
-            session.save(person3);
-
+            //Вывод всех людей из БД
+            List<Person> people1 = session.createQuery("FROM Person").getResultList();
+            for (Person person: people1)
+                System.out.println(person);
+            //Вывод всех людей из БД старше 30
+            List<Person> people2 = session.createQuery("FROM Person where age > 30").getResultList();
+            for (Person person: people2)
+                System.out.println(person);
+            //Вывод всех людей из БД c именем начинающимся на букву T
+            List<Person> people3 = session.createQuery("FROM Person where name LIKE 'T%'").getResultList();
+            for (Person person: people3)
+                System.out.println(person);
+            //Обновляем имя всех людей возраст которых = 30
+            session.createQuery("update Person set name = 'Test' where age = 30").executeUpdate();
+            //Удалим всех людей возраст которых больше или равен 30
+            session.createQuery("delete from Person where age >= 30").executeUpdate();
             session.getTransaction().commit();
 
-            //получение id новой записи в таблице.
-            System.out.println("Id новой записи " + person3.getId());
 
         } finally {
             sessionFactory.close();
