@@ -3,32 +3,51 @@ package ru.sergsnic.springcourse;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import ru.sergsnic.springcourse.model.Item;
+import ru.sergsnic.springcourse.model.Passport;
 import ru.sergsnic.springcourse.model.Person;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Hello world!
  */
 public class App {
     public static void main(String[] args) {
-        Configuration configuration = new Configuration().addAnnotatedClass(Person.class).addAnnotatedClass(Item.class);
-        SessionFactory sessionFactory = configuration.buildSessionFactory();
+        Configuration configuration = new Configuration().addAnnotatedClass(Person.class).addAnnotatedClass(Passport.class);
+        SessionFactory sessionFactory = configuration.buildSessionFactory();;
         Session session = sessionFactory.getCurrentSession();
-        try {
+//        try(sessionFactory) {
+//            session.beginTransaction();
+//            //создание человека с паспортом
+//            Person person = new Person("Testig name",50);
+//            Passport passport = new Passport(123456);
+//            person.setPassport(passport);
+//            session.save(person);
+//            session.getTransaction().commit();
+//        }
+
+//        try(sessionFactory) {
+//            //получение номера паспорта по человеку
+//            session.beginTransaction();
+//            Person person = session.get(Person.class, 1);
+//            System.out.println("номер паспорта personId = 1: " + person.getPassport().getPassportNumber());
+//            //получение имени человека по паспорту
+//            Passport passport = session.get(Passport.class, 2);
+//            System.out.println("имя человека id = 2" + passport.getPerson().getName());
+//            session.getTransaction().commit();
+//        }
+//        try(sessionFactory) {
+//            //Изменение номера паспорта
+//            session.beginTransaction();
+//            Person person = session.get(Person.class, 2);
+//            person.getPassport().setPassportNumber(7777777);
+//            session.getTransaction().commit();
+//        }
+        try(sessionFactory) {
+            //Удаление человека и каскадом паспорта
             session.beginTransaction();
-            Person person = new Person("Kaskad",30);
-            person.addItem(new Item("Item1"));
-            person.addItem(new Item("Item2"));
-            person.addItem(new Item("Item3"));
-            session.save(person);
+            Person person = session.get(Person.class, 5);
+            session.remove(person);
             session.getTransaction().commit();
-        } finally {
-            sessionFactory.close();
         }
+
     }
 }
