@@ -3,49 +3,54 @@ package ru.sergsnic.springcourse;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
-import ru.sergsnic.springcourse.model.Passport;
-import ru.sergsnic.springcourse.model.Person;
+import ru.sergsnic.springcourse.model.Actor;
+import ru.sergsnic.springcourse.model.Movie;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * Hello world!
  */
 public class App {
     public static void main(String[] args) {
-        Configuration configuration = new Configuration().addAnnotatedClass(Person.class).addAnnotatedClass(Passport.class);
+        Configuration configuration = new Configuration().addAnnotatedClass(Actor.class).addAnnotatedClass(Movie.class);
         SessionFactory sessionFactory = configuration.buildSessionFactory();;
-        Session session = sessionFactory.getCurrentSession();
-//        try(sessionFactory) {
-//            session.beginTransaction();
-//            //создание человека с паспортом
-//            Person person = new Person("Testig name",50);
-//            Passport passport = new Passport(123456);
-//            person.setPassport(passport);
-//            session.save(person);
-//            session.getTransaction().commit();
-//        }
 
-//        try(sessionFactory) {
-//            //получение номера паспорта по человеку
-//            session.beginTransaction();
-//            Person person = session.get(Person.class, 1);
-//            System.out.println("номер паспорта personId = 1: " + person.getPassport().getPassportNumber());
-//            //получение имени человека по паспорту
-//            Passport passport = session.get(Passport.class, 2);
-//            System.out.println("имя человека id = 2" + passport.getPerson().getName());
-//            session.getTransaction().commit();
-//        }
-//        try(sessionFactory) {
-//            //Изменение номера паспорта
-//            session.beginTransaction();
-//            Person person = session.get(Person.class, 2);
-//            person.getPassport().setPassportNumber(7777777);
-//            session.getTransaction().commit();
-//        }
         try(sessionFactory) {
-            //Удаление человека и каскадом паспорта
+            Session session = sessionFactory.getCurrentSession();
             session.beginTransaction();
-            Person person = session.get(Person.class, 5);
-            session.remove(person);
+            //Добавление Фильма и актеров
+//            Movie movie = new Movie("Pulp fiction", 1994);
+//            Actor actor1 = new Actor("Harvey Keytel",81);
+//            Actor actor2 = new Actor("Samuel L. Jackson",72);
+//            movie.setActors(new ArrayList<>(List.of(actor1,actor2)));
+//            actor1.setMovies(new ArrayList<>(Collections.singletonList(movie)));
+//            actor2.setMovies(new ArrayList<>(Collections.singletonList(movie)));
+//            session.save(movie);
+//            session.save(actor1);
+//            session.save(actor2);
+            //Добавление фильма и назначение актера из списка
+//            Movie movie = new Movie("Reservoir Dogs", 1998);
+//            Actor actor = session.get(Actor.class,3);
+//            movie.setActors(new ArrayList<>(Collections.singletonList(actor)));
+//            actor.getMovies().add(movie);
+//            session.save(actor);
+
+            //session.save(movie);
+            //вывод списка актеров и фильмов
+//            Movie movie = session.get(Movie.class,2);
+//            movie.getActors().stream().forEach(System.out::println);
+//            Actor actor = session.get(Actor.class,4);
+//            actor.getMovies().stream().forEach(System.out::println);
+            //Удалим фильм у актера и самого актера
+            Actor actor = session.get(Actor.class, 4);
+            Movie movie = actor.getMovies().get(0);
+            actor.getMovies().remove(0);
+            movie.getActors().remove(actor);
+
             session.getTransaction().commit();
         }
 
